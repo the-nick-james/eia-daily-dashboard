@@ -6,11 +6,70 @@ An interactive web dashboard for visualizing daily energy prices from the U.S. E
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+## What This App Does
+
+This dashboard allows you to:
+- **Track Energy Prices**: Monitor daily prices for crude oil (WTI, Brent), gasoline, diesel, natural gas, and more
+- **Compare Multiple Commodities**: View and compare up to 8 different energy price series side-by-side
+- **Analyze Trends**: Interactive charts let you zoom, pan, and explore price movements over time
+- **Export Data**: Download historical price data as CSV files for your own analysis
+- **View Statistics**: See current prices, historical highs/lows, averages, and percentage changes
+
+All data comes directly from the official U.S. Energy Information Administration API in real-time.
+
 ## Dashboard Preview
 
 ![EIA Dashboard Interface](https://github.com/user-attachments/assets/b4fb0149-5c77-4428-811f-11fae9b37e80)
 
 *Interactive dashboard interface showing price series selection, date range filters, and visualization tabs*
+
+## Quick Start
+
+Get the dashboard running in 3 simple steps:
+
+1. **Get a free EIA API key** (takes 2 minutes): Visit [EIA Registration](https://www.eia.gov/opendata/register.php)
+
+2. **Install and configure**:
+   ```bash
+   git clone https://github.com/the-nick-james/eia-daily-dashboard.git
+   cd eia-daily-dashboard
+   pip install -r requirements.txt
+   cp .env.example .env
+   # Edit .env and add your API key: EIA_API_KEY=your_key_here
+   ```
+
+3. **Launch the dashboard**:
+   ```bash
+   streamlit run app.py
+   ```
+   
+   The dashboard will automatically open in your browser at `http://localhost:8501`
+
+## How to Use the Dashboard
+
+Once the dashboard is running:
+
+1. **Select Price Series** (left sidebar): 
+   - Choose one or more energy commodities from the dropdown
+   - Default selections are WTI and Brent crude oil
+
+2. **Choose Date Range** (left sidebar):
+   - Quick options: Last 7/30/90 days, 6 months, or 1 year
+   - Or select custom start and end dates
+
+3. **Explore Your Data** (main area):
+   - **Price Charts Tab**: Interactive line graphs with zoom/pan, hover for exact values
+   - **Statistics Tab**: Current prices, min/max, averages, and period changes
+   - **Data Table Tab**: Raw data grid with CSV download button
+
+### Example: Comparing Crude Oil Prices
+
+Want to compare WTI vs Brent crude oil over the last 3 months?
+1. Launch the app: `streamlit run app.py`
+2. In the sidebar, ensure "WTI Crude Oil Spot Price" and "Brent Crude Oil Spot Price" are selected
+3. Choose "Last 90 Days" from the date range dropdown
+4. View the overlaid price chart in the Price Charts tab
+5. Click the Statistics tab to see the price difference between the two
 
 ## Features
 
@@ -33,14 +92,14 @@ The dashboard provides access to the following daily price series:
 - **Natural Gas**: Henry Hub spot price
 - **Propane**: Mont Belvieu, TX spot price
 
-## Installation
+## Installation (Detailed)
 
 ### Prerequisites
 
 - Python 3.8 or higher
 - EIA API key (free registration at [EIA Registration](https://www.eia.gov/opendata/register.php))
 
-### Setup
+### Setup Steps
 
 1. **Clone the repository**:
    ```bash
@@ -65,31 +124,18 @@ The dashboard provides access to the following daily price series:
    EIA_API_KEY=your_actual_api_key_here
    ```
 
-## Usage
+4. **Launch the dashboard**:
+   ```bash
+   streamlit run app.py
+   ```
+   
+   The dashboard will open in your default web browser at `http://localhost:8501`.
 
-### Running the Dashboard
+## Programmatic Usage (Python API)
 
-Start the Streamlit application:
-
-```bash
-streamlit run app.py
-```
-
-The dashboard will open in your default web browser at `http://localhost:8501`.
-
-### Using the Dashboard
-
-1. **Select Price Series**: Use the sidebar to choose one or more energy price series to visualize
-2. **Choose Date Range**: Select a preset range (last 7 days, 30 days, etc.) or specify custom dates
-3. **Explore Data**: 
-   - **Price Charts**: Interactive line charts with zoom and hover features
-   - **Statistics**: View key metrics including current price, min/max, average, and change
-   - **Data Table**: Browse raw data and download as CSV
-
-### Example Usage
+You can also use the EIA client directly in your Python scripts:
 
 ```python
-# You can also use the EIA client programmatically
 from eia_client import EIAClient
 from datetime import datetime, timedelta
 
