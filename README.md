@@ -198,14 +198,43 @@ print(data.head())
 
 ```
 eia-daily-dashboard/
-├── app.py              # Main Streamlit dashboard application
-├── eia_client.py       # EIA API client for data fetching
-├── requirements.txt    # Python dependencies
-├── .env.example        # Example environment configuration
-├── .gitignore         # Git ignore rules
-├── LICENSE            # MIT License
-└── README.md          # This file
+├── app.py                  # Main Streamlit dashboard application
+├── eia_client.py           # EIA API client for data fetching
+├── test_dashboard.py       # Unit tests (pytest)
+├── test_components.py      # Component verification script
+├── demo.py                 # Demo script with mock data
+├── requirements.txt        # Python dependencies
+├── .devcontainer/          # Dev container configuration
+├── .env.example            # Example environment configuration
+├── .gitignore             # Git ignore rules
+├── LICENSE                # MIT License
+└── README.md              # This file
 ```
+
+## Testing
+
+The project includes comprehensive unit tests to ensure code quality and prevent regressions.
+
+### Running Tests
+
+**Run the full test suite with pytest:**
+```bash
+pytest test_dashboard.py -v
+```
+
+**Run a quick component verification:**
+```bash
+python test_components.py
+```
+
+**Test coverage includes:**
+- EIA API client initialization and error handling
+- Data fetching with mocked API responses
+- Statistical calculations (including edge cases like division by zero)
+- Data processing and transformations
+- Date range calculations
+
+All tests use mocking to avoid requiring an actual API key or network connection.
 
 ## Dependencies
 
@@ -214,6 +243,7 @@ eia-daily-dashboard/
 - **plotly**: Interactive charting library
 - **requests**: HTTP library for API calls
 - **python-dotenv**: Environment variable management
+- **pytest**: Testing framework (for development)
 
 ## API Information
 

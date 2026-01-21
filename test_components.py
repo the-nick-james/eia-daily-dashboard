@@ -3,7 +3,6 @@ Test script to verify the dashboard components work correctly.
 """
 
 import sys
-from datetime import datetime, timedelta
 import pandas as pd
 
 # Test imports
