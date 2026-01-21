@@ -25,6 +25,45 @@ All data comes directly from the official U.S. Energy Information Administration
 
 ## Quick Start
 
+### Option 1: Using Dev Container (Recommended)
+
+The easiest way to get started is using the pre-configured dev container with Python 3.12:
+
+1. **Prerequisites**: 
+   - [Visual Studio Code](https://code.visualstudio.com/)
+   - [Docker Desktop](https://www.docker.com/products/docker-desktop)
+   - [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
+
+2. **Open in Dev Container**:
+   ```bash
+   git clone https://github.com/the-nick-james/eia-daily-dashboard.git
+   cd eia-daily-dashboard
+   code .
+   ```
+   
+   When prompted, click "Reopen in Container" (or press `F1` and select "Dev Containers: Reopen in Container")
+
+3. **Configure API Key**:
+   - The dev container automatically creates a `.env` file from `.env.example`
+   - Edit `.env` and add your EIA API key: `EIA_API_KEY=your_key_here`
+   - Get a free API key at [EIA Registration](https://www.eia.gov/opendata/register.php)
+
+4. **Launch the dashboard**:
+   ```bash
+   streamlit run app.py
+   ```
+   
+   The dashboard will automatically open in your browser at `http://localhost:8501`
+
+**What the dev container does for you:**
+- Sets up Python 3.12 environment
+- Creates a virtual environment in `.venv`
+- Installs all dependencies from `requirements.txt`
+- Configures VS Code with Python extensions and settings
+- Forwards port 8501 for the Streamlit dashboard
+
+### Option 2: Manual Setup
+
 Get the dashboard running in 3 simple steps:
 
 1. **Get a free EIA API key** (takes 2 minutes): Visit [EIA Registration](https://www.eia.gov/opendata/register.php)
