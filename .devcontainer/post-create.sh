@@ -7,9 +7,13 @@ set -e
 
 echo "🔧 Setting up EIA Daily Dashboard development environment..."
 
-# Create virtual environment in .venv
-echo "📦 Creating virtual environment in .venv..."
-python -m venv .venv
+# Create virtual environment in .venv if it doesn't exist
+if [ ! -d .venv ]; then
+    echo "📦 Creating virtual environment in .venv..."
+    python -m venv .venv
+else
+    echo "📦 Virtual environment .venv already exists, skipping creation..."
+fi
 
 # Activate virtual environment
 source .venv/bin/activate
