@@ -125,7 +125,12 @@ def calculate_statistics(df):
     current_price = df['value'].iloc[-1]
     previous_price = df['value'].iloc[0]
     price_change = current_price - previous_price
-    price_change_pct = (price_change / previous_price) * 100
+    # Protect against division by zero or near-zero previous_price
+    epsilon = 1e-9
+    if abs(previous_price) < epsilon:
+        price_change_pct = None
+    else:
+        price_change_pct = (price_change / previous_price) * 100
     
     return {
         'current': current_price,
