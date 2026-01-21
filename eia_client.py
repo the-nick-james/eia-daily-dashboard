@@ -3,6 +3,7 @@ EIA API Client for fetching energy price data from the U.S. Energy Information A
 """
 
 import os
+import logging
 import requests
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
@@ -11,6 +12,9 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class EIAClient:
@@ -150,7 +154,7 @@ class EIAClient:
             return df
             
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching data: {e}")
+            logger.error(f"Error fetching data from EIA API: {e}", exc_info=True)
             return pd.DataFrame(columns=["date", "value"])
     
     def get_price_data(
