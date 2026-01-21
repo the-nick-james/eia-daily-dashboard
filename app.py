@@ -192,34 +192,43 @@ def main():
         ["Last 7 Days", "Last 30 Days", "Last 90 Days", "Last 6 Months", "Last Year", "Custom"]
     )
     
-    end_date = datetime.now()
-    
+    # Initialize date variables based on selection
     if date_preset == "Last 7 Days":
+        end_date = datetime.now()
         start_date = end_date - timedelta(days=7)
     elif date_preset == "Last 30 Days":
+        end_date = datetime.now()
         start_date = end_date - timedelta(days=30)
     elif date_preset == "Last 90 Days":
+        end_date = datetime.now()
         start_date = end_date - timedelta(days=90)
     elif date_preset == "Last 6 Months":
+        end_date = datetime.now()
         start_date = end_date - timedelta(days=180)
     elif date_preset == "Last Year":
+        end_date = datetime.now()
         start_date = end_date - timedelta(days=365)
     else:  # Custom
+        # Get date inputs (returns date objects)
         col1, col2 = st.sidebar.columns(2)
+        current_date = datetime.now()
+        
         with col1:
-            start_date = st.date_input(
+            start_date_input = st.date_input(
                 "Start date:",
-                value=end_date - timedelta(days=90),
-                max_value=end_date
+                value=current_date - timedelta(days=90),
+                max_value=current_date
             )
         with col2:
-            end_date = st.date_input(
+            end_date_input = st.date_input(
                 "End date:",
-                value=end_date,
-                max_value=datetime.now()
+                value=current_date,
+                max_value=current_date
             )
-        start_date = datetime.combine(start_date, datetime.min.time())
-        end_date = datetime.combine(end_date, datetime.min.time())
+        
+        # Convert date objects to datetime objects
+        start_date = datetime.combine(start_date_input, datetime.min.time())
+        end_date = datetime.combine(end_date_input, datetime.min.time())
     
     # Display selected series info
     st.sidebar.subheader("ℹ️ Series Information")
