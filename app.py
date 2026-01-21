@@ -5,7 +5,6 @@ EIA Daily Dashboard - Interactive dashboard for visualizing daily energy prices 
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 from eia_client import EIAClient
 import os
