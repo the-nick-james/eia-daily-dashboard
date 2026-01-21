@@ -332,8 +332,13 @@ def main():
                 combined_df = pd.concat([combined_df, temp_df], ignore_index=True)
         
         if not combined_df.empty:
-            # Pivot for better display
-            pivot_df = combined_df.pivot(index='date', columns='series', values='value')
+            # Pivot for better display; use pivot_table to safely handle any duplicate (date, series) pairs
+            pivot_df = combined_df.pivot_table(
+                index='date',
+                columns='series',
+                values='value',
+                aggfunc='first'
+            )
             pivot_df = pivot_df.sort_index(ascending=False)
             
             st.dataframe(
