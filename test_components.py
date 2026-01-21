@@ -10,7 +10,7 @@ import pandas as pd
 print("Testing imports...")
 try:
     import streamlit
-    print("✓ Streamlit imported successfully")
+    print(f"✓ Streamlit imported successfully (version {streamlit.__version__})")
 except ImportError as e:
     print(f"✗ Failed to import streamlit: {e}")
     sys.exit(1)
