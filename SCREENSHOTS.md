@@ -1,36 +1,38 @@
 # Screenshots and Visual Examples
 
-This directory would contain screenshots of the EIA Daily Dashboard in action.
+This directory is intended to contain screenshots of the EIA Daily Dashboard in action.
+
+_Note: The screenshots described below are planned placeholders. Actual image files are not yet committed to the repository and will be added once captured._
 
 ## Expected Screenshots
 
 ### 1. Main Dashboard View
-![Main Dashboard](screenshots/main_dashboard.png)
+_Planned screenshot: to be added once captured._
 - Shows the main interface with multiple energy price series selected
 - Interactive Plotly charts with zoom and hover capabilities
 - Date range selector in the sidebar
 
 ### 2. Price Charts Tab
-![Price Charts](screenshots/price_charts.png)
+_Planned screenshot: to be added once captured._
 - Multiple overlaid price series for comparison
 - Interactive legend to show/hide series
 - Time range slider at the bottom
 
 ### 3. Statistics Tab
-![Statistics](screenshots/statistics_tab.png)
+_Planned screenshot: to be added once captured._
 - Current price metrics
 - Min/max values for the selected period
 - Average prices
 - Period change with percentage
 
 ### 4. Data Table Tab
-![Data Table](screenshots/data_table.png)
+_Planned screenshot: to be added once captured._
 - Raw data in tabular format
 - Download CSV button
 - Pivoted view with dates as rows and series as columns
 
 ### 5. Series Selection
-![Series Selection](screenshots/series_selection.png)
+_Planned screenshot: to be added once captured._
 - Sidebar with available series
 - Multi-select dropdown
 - Series information expandable sections
