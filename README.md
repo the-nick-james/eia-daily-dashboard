@@ -6,6 +6,12 @@ An interactive web dashboard for visualizing daily energy prices from the U.S. E
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+## Dashboard Preview
+
+![EIA Dashboard Interface](https://github.com/user-attachments/assets/b4fb0149-5c77-4428-811f-11fae9b37e80)
+
+*Interactive dashboard interface showing price series selection, date range filters, and visualization tabs*
+
 ## Features
 
 - 📈 **Interactive Charts**: Visualize multiple energy price series with zoom, pan, and hover capabilities
