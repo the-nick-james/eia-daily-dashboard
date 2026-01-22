@@ -300,10 +300,11 @@ def main():
                 )
             
             with cols[1]:
+                change_pct_display = "N/A" if stats['change_pct'] is None else f"{stats['change_pct']:.2f}%"
                 st.metric(
                     "Period Change",
                     f"${stats['change']:.2f}",
-                    f"{stats['change_pct']:.2f}%"
+                    change_pct_display
                 )
             
             with cols[2]:
