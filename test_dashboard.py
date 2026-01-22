@@ -156,28 +156,26 @@ class TestCalculateStatistics:
             'value': [100, 105, 103, 108, 110, 107, 112, 115, 113, 118]
         })
         
-        # Manually calculate expected values
-        stats = {
-            'current': df['value'].iloc[-1],
-            'min': df['value'].min(),
-            'max': df['value'].max(),
-            'mean': df['value'].mean(),
-            'change': df['value'].iloc[-1] - df['value'].iloc[0],
-            'change_pct': ((df['value'].iloc[-1] - df['value'].iloc[0]) / df['value'].iloc[0]) * 100
-        }
+        # Call the actual calculate_statistics function from app.py
+        stats = self.app_module.calculate_statistics(df)
         
+        assert stats is not None
         assert stats['current'] == 118
         assert stats['min'] == 100
         assert stats['max'] == 118
         assert stats['change'] == 18
         assert abs(stats['change_pct'] - 18.0) < 0.01
+        assert abs(stats['mean'] - 109.1) < 0.1
     
     def test_calculate_statistics_with_empty_dataframe(self):
         """Test that empty DataFrame returns None."""
         df = pd.DataFrame(columns=['date', 'value'])
         
+        # Call the actual calculate_statistics function from app.py
+        stats = self.app_module.calculate_statistics(df)
+        
         # Expected behavior: return None for empty DataFrame
-        assert df.empty is True
+        assert stats is None
     
     def test_calculate_statistics_with_zero_previous_price(self):
         """Test handling of zero previous price (division by zero case)."""
@@ -186,18 +184,14 @@ class TestCalculateStatistics:
             'value': [0, 50, 100]
         })
         
-        # When previous price is zero, percentage change should be None or handled gracefully
-        previous_price = df['value'].iloc[0]
-        assert previous_price == 0
+        # Call the actual calculate_statistics function from app.py
+        stats = self.app_module.calculate_statistics(df)
         
-        # Percentage calculation would fail without proper handling
-        epsilon = 1e-9
-        if abs(previous_price) < epsilon:
-            price_change_pct = None
-        else:
-            price_change_pct = ((df['value'].iloc[-1] - previous_price) / previous_price) * 100
-        
-        assert price_change_pct is None
+        # When previous price is zero, percentage change should be None
+        assert stats is not None
+        assert stats['current'] == 100
+        assert stats['change'] == 100
+        assert stats['change_pct'] is None  # Should be None due to division by zero protection
 
 
 class TestDataProcessing:

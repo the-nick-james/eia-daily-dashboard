@@ -7,14 +7,25 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import numpy as np
+import argparse
 
 # Generate mock price data
-def generate_mock_data(start_date, end_date, base_price=80, volatility=5):
-    """Generate realistic-looking mock price data."""
+def generate_mock_data(start_date, end_date, base_price=80, volatility=5, seed=42):
+    """Generate realistic-looking mock price data.
+    
+    Args:
+        start_date: Start date for data generation
+        end_date: End date for data generation
+        base_price: Starting price for the series
+        volatility: Price volatility factor
+        seed: Random seed for reproducibility (default: 42 for consistent demos)
+    """
     dates = pd.date_range(start=start_date, end=end_date, freq='D')
     
     # Generate prices with some random walk and trend
-    np.random.seed(42)
+    # Note: Seed is set to 42 by default for reproducible demonstrations
+    # Pass a different seed value to generate varied mock datasets
+    np.random.seed(seed)
     prices = [base_price]
     for _ in range(len(dates) - 1):
         change = np.random.normal(0, volatility)
@@ -26,16 +37,22 @@ def generate_mock_data(start_date, end_date, base_price=80, volatility=5):
         'value': prices
     })
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Generate mock EIA price data for demonstration')
+parser.add_argument('--seed', type=int, default=42, 
+                    help='Random seed for data generation (default: 42 for reproducibility)')
+args = parser.parse_args()
+
 # Generate sample data for different series
-print("Generating mock EIA price data...")
+print(f"Generating mock EIA price data (seed={args.seed})...")
 end_date = datetime.now()
 start_date = end_date - timedelta(days=90)
 
 mock_data = {
-    "WTI Crude Oil Spot Price": generate_mock_data(start_date, end_date, base_price=75, volatility=2),
-    "Brent Crude Oil Spot Price": generate_mock_data(start_date, end_date, base_price=78, volatility=2.2),
-    "Natural Gas Henry Hub": generate_mock_data(start_date, end_date, base_price=3.5, volatility=0.3),
-    "U.S. Regular Gasoline Price": generate_mock_data(start_date, end_date, base_price=3.2, volatility=0.15),
+    "WTI Crude Oil Spot Price": generate_mock_data(start_date, end_date, base_price=75, volatility=2, seed=args.seed),
+    "Brent Crude Oil Spot Price": generate_mock_data(start_date, end_date, base_price=78, volatility=2.2, seed=args.seed+1),
+    "Natural Gas Henry Hub": generate_mock_data(start_date, end_date, base_price=3.5, volatility=0.3, seed=args.seed+2),
+    "U.S. Regular Gasoline Price": generate_mock_data(start_date, end_date, base_price=3.2, volatility=0.15, seed=args.seed+3),
 }
 
 # Display statistics

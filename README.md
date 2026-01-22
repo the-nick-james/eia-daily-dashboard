@@ -135,7 +135,7 @@ The dashboard provides access to the following daily price series:
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.12 or higher (tested with Python 3.12)
 - EIA API key (free registration at [EIA Registration](https://www.eia.gov/opendata/register.php))
 
 ### Setup Steps
