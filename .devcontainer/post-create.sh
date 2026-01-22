@@ -15,7 +15,9 @@ else
     echo "📦 Virtual environment .venv already exists, skipping creation..."
 fi
 
-# Activate virtual environment
+# Activate virtual environment for this script only; VS Code/devcontainer
+# configuration (python.defaultInterpreterPath / VIRTUAL_ENV) handles
+# terminal activation for interactive sessions.
 source .venv/bin/activate
 
 # Upgrade pip
