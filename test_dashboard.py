@@ -147,6 +147,7 @@ class TestCalculateStatistics:
             os.path.join(os.path.dirname(__file__), "app.py")
         )
         self.app_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.app_module)
     
     def test_calculate_statistics_with_valid_data(self):
         """Test statistics calculation with valid data."""
