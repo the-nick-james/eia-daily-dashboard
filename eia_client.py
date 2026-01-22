@@ -155,7 +155,7 @@ class EIAClient:
             
         except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching data from EIA API: {e}", exc_info=True)
-            return pd.DataFrame(columns=["date", "value"])
+            raise
     
     def get_price_data(
         self,
