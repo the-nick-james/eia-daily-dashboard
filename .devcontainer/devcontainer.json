@@ -1,0 +1,45 @@
+{
+	"name": "EIA Daily Dashboard - Python 3.12",
+	"image": "mcr.microsoft.com/devcontainers/python:3.12",
+	
+	// Configure tool-specific properties
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+				"python.terminal.activateEnvironment": true,
+				"python.linting.enabled": true,
+				"python.linting.pylintEnabled": false,
+				"python.linting.flake8Enabled": false
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter",
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	},
+
+	// Use 'postCreateCommand' to run commands after the container is created
+	"postCreateCommand": "bash .devcontainer/post-create.sh",
+
+	// Configure environment variables
+	"remoteEnv": {
+		"VIRTUAL_ENV": "${containerWorkspaceFolder}/.venv"
+	},
+
+	// Features to add to the dev container
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+
+	// Forward ports for Streamlit
+	"forwardPorts": [8501],
+	"portsAttributes": {
+		"8501": {
+			"label": "Streamlit Dashboard",
+			"onAutoForward": "notify"
+		}
+	}
+}
