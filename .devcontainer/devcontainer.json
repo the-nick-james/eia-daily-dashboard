@@ -13,10 +13,10 @@
 				"python.linting.flake8Enabled": false
 			},
 			"extensions": [
+				"GitHub.copilot",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"ms-toolsai.jupyter",
-				"streetsidesoftware.code-spell-checker"
+				"ms-toolsai.jupyter"
 			]
 		}
 	},

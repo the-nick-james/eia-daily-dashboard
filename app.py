@@ -35,9 +35,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-@st.cache_resource
 def get_eia_client():
-    """Initialize and cache the EIA client."""
+    """Initialize the EIA client."""
     try:
         return EIAClient()
     except ValueError as e:
@@ -45,14 +44,14 @@ def get_eia_client():
         st.stop()
 
 
-@st.cache_data(ttl=3600)  # Cache for 1 hour
-def fetch_price_data(series_names, start_date, end_date):
+# @st.cache_data  # Cache for 1 hour
+def fetch_price_data(_client: EIAClient, series_names, start_date_str, end_date_str, frequency=None):
     """Fetch and cache price data."""
-    client = get_eia_client()
-    return client.get_multiple_series(
+    return _client.get_multiple_series(
         series_names,
-        start_date=start_date.strftime("%Y-%m-%d"),
-        end_date=end_date.strftime("%Y-%m-%d")
+        start_date=start_date_str,
+        end_date=end_date_str,
+        frequency=frequency
     )
 
 
@@ -236,13 +235,60 @@ def main():
         with st.sidebar.expander(series):
             st.write(available_series[series]['description'])
     
+    # Frequency selection
+    st.sidebar.subheader("📊 Data Frequency")
+    frequency_options = ["daily", "weekly", "monthly", "annual"]
+    
+    # Check session state for disabled frequencies
+    if "disabled_frequencies" not in st.session_state:
+        st.session_state.disabled_frequencies = set()
+    
+    # Filter out disabled frequencies for the current series selection
+    series_key = tuple(sorted(selected_series))
+    if "frequency_cache" not in st.session_state:
+        st.session_state.frequency_cache = {}
+    
+    # Get previously disabled frequencies for this series combination
+    disabled_for_series = st.session_state.frequency_cache.get(series_key, set())
+    available_frequencies = [f for f in frequency_options if f not in disabled_for_series]
+    
+    if not available_frequencies:
+        available_frequencies = frequency_options  # Reset if all disabled
+        st.session_state.frequency_cache[series_key] = set()
+    
+    selected_frequency = st.sidebar.selectbox(
+        "Choose frequency:",
+        options=available_frequencies,
+        index=0,
+        help="Select the data frequency. Some series may not support all frequencies."
+    )
+    
     # Fetch data
     with st.spinner("Fetching data from EIA..."):
         try:
-            data_dict = fetch_price_data(selected_series, start_date, end_date)
+            client = get_eia_client()
+            data_dict = fetch_price_data(
+                client,
+                tuple(selected_series),
+                start_date.strftime("%Y-%m-%d"),
+                end_date.strftime("%Y-%m-%d"),
+                selected_frequency
+            )
         except Exception as e:
-            st.error(f"Error fetching data: {e}")
-            st.stop()
+            error_msg = str(e).lower()
+            # Check if this is a 400 error indicating invalid frequency
+            if "400" in str(e) or "bad request" in error_msg:
+                # Mark this frequency as invalid for these series
+                if series_key not in st.session_state.frequency_cache:
+                    st.session_state.frequency_cache[series_key] = set()
+                st.session_state.frequency_cache[series_key].add(selected_frequency)
+                
+                st.error(f"The '{selected_frequency}' frequency is not available for the selected series. Please choose a different frequency.")
+                st.info("Tip: Try 'daily' or 'monthly' as these are commonly available.")
+                st.stop()
+            else:
+                st.error(f"Error fetching data: {e}")
+                st.stop()
     
     # Main content area
     tabs = st.tabs(["📈 Price Charts", "📊 Statistics", "📋 Data Table"])

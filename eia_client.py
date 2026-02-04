@@ -2,6 +2,7 @@
 EIA API Client for fetching energy price data from the U.S. Energy Information Administration.
 """
 
+import json
 import os
 import logging
 import requests
@@ -118,29 +119,38 @@ class EIAClient:
         
         # Construct API URL
         url = f"{self.BASE_URL}/{route}/data/"
-        
-        params = {
-            "api_key": self.api_key,
+        header = {
             "frequency": frequency,
-            "data[0]": "value",
-            "facets[series][]": series,
+            "data": [
+                "value"
+            ],
+            "facets": {
+                "series": [series]
+            },
             "start": start_date,
             "end": end_date,
-            "sort[0][column]": "period",
-            "sort[0][direction]": "asc",
+            "sort": [
+                {
+                    "column": "period",
+                    "direction": "desc"
+                }
+            ],
             "offset": 0,
             "length": 5000
         }
+        params = { "api_key": self.api_key }
         
         # Configure timeout and retry parameters
-        timeout = 15  # Reduced from 30s for better UX
+        timeout = 180  # Increased from 30s for better UX
         max_retries = 3
         
         for attempt in range(max_retries):
             try:
-                response = requests.get(url, params=params, timeout=timeout)
+                response = requests.get(url, params=params, headers={"X-Params": json.dumps(header)}, timeout=timeout)
                 response.raise_for_status()
                 data = response.json()
+
+                print(json.dumps(data, indent=2))  # Debugging line to inspect the response structure
                 
                 if "response" not in data or "data" not in data["response"]:
                     return pd.DataFrame(columns=["date", "value"])
@@ -168,14 +178,27 @@ class EIAClient:
                     logger.error(f"Request timed out after {max_retries} attempts")
                     raise
             except requests.exceptions.RequestException as e:
-                logger.error(f"Error fetching data from EIA API: {e}", exc_info=True)
-                raise
+                if e.response.status_code == 400:
+                    decoded_error = e.response.content.decode(response.encoding or 'utf-8')
+                    logger.warning(f"Bad request to EIA API: {decoded_error}")
+                    raise requests.exceptions.RequestException(f"Bad request to EIA API: {decoded_error}") from e
+                    
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                    logger.warning(f"Error fetching data from EIA API: {e} (attempt {attempt + 1}/{max_retries}), retrying in {wait_time}s...")
+                    import time
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"Error fetching data from EIA API: {e}", exc_info=True)
+                    raise
+
     
     def get_price_data(
         self,
         series_name: str,
         start_date: Optional[str] = None,
-        end_date: Optional[str] = None
+        end_date: Optional[str] = None,
+        frequency: Optional[str] = None
     ) -> pd.DataFrame:
         """
         Fetch price data for a named series.
@@ -184,6 +207,7 @@ class EIAClient:
             series_name: Name of the series from SERIES_MAP
             start_date: Start date in YYYY-MM-DD format
             end_date: End date in YYYY-MM-DD format
+            frequency: Data frequency (daily, weekly, monthly, annual). If None, uses series default.
             
         Returns:
             DataFrame with date and value columns
@@ -192,19 +216,22 @@ class EIAClient:
             raise ValueError(f"Unknown series: {series_name}. Available: {list(self.SERIES_MAP.keys())}")
         
         series_info = self.SERIES_MAP[series_name]
+        # Use provided frequency or fall back to series default
+        freq = frequency if frequency else series_info["frequency"]
         return self.get_series_data(
             route=series_info["route"],
             series=series_info["series"],
             start_date=start_date,
             end_date=end_date,
-            frequency=series_info["frequency"]
+            frequency=freq
         )
     
     def get_multiple_series(
         self,
         series_names: List[str],
         start_date: Optional[str] = None,
-        end_date: Optional[str] = None
+        end_date: Optional[str] = None,
+        frequency: Optional[str] = None
     ) -> Dict[str, pd.DataFrame]:
         """
         Fetch data for multiple series.
@@ -213,13 +240,14 @@ class EIAClient:
             series_names: List of series names from SERIES_MAP
             start_date: Start date in YYYY-MM-DD format
             end_date: End date in YYYY-MM-DD format
+            frequency: Data frequency (daily, weekly, monthly, annual). If None, uses series default.
             
         Returns:
             Dictionary mapping series names to DataFrames
         """
         results = {}
         for series_name in series_names:
-            results[series_name] = self.get_price_data(series_name, start_date, end_date)
+            results[series_name] = self.get_price_data(series_name, start_date, end_date, frequency)
         return results
     
     @classmethod
